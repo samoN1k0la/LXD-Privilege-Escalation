@@ -32,3 +32,6 @@ Now, you need to find a way to send the previously made Alpine linux container (
 For example, one way would be to make a http server in the lxd-alpine-builder directory and download the tar.gz file from it.
 It can be done very easily using the pythons built-in function http.server (run the following command on your attacker machine):
 > python3 -m http.server
+
+Next, you need to download the tar.gz file, on the target machine, from the http server. You can do that via the browser, but I like to do it
+via the 

